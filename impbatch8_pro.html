@@ -1,0 +1,2727 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Ayurvedic Disease Database by PARTH — Enhanced UI</title>
+<meta content="Enhanced Ayurvedic Disease Database by PARTH with modern UI, animations and accessibility." name="description"/>
+<style>
+        :root{
+            /* Enhanced Ayurvedic Color Palette */
+            --bg: 46 45% 98%;
+            --fg: 220 11% 12%;
+            --muted: 220 7% 40%;
+            --glass: rgba(255,255,255,0.65);
+            --glass-strong: rgba(255,255,255,0.75);
+            --glass-border: 255 255 255;
+            
+            /* Ayurvedic Colors - Herbal & Natural */
+            --accent1: 120 35% 25%; /* Deep Forest Green */
+            --accent2: 45 88% 55%;  /* Turmeric Gold */
+            --accent3: 25 95% 65%;  /* Saffron Orange */
+            --accent4: 40 25% 88%;  /* Warm Beige */
+            
+            /* Modern Glass Effects */
+            --card-radius: 1rem;
+            --shadow-soft: 0 10px 30px rgba(16,24,32,0.08);
+            --shadow-hover: 0 20px 60px rgba(16,24,32,0.15);
+            --glass-blur: 12px;
+            --transition-fast: 280ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: 350ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        *{
+            box-sizing:border-box;
+        }
+        
+        html,body{
+            height:100%;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body{
+            font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, 
+                hsl(120 45% 97%) 0%, 
+                hsl(45 55% 96%) 35%, 
+                hsl(25 45% 97%) 100%
+            );
+            color: hsl(var(--fg));
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.6;
+            padding-bottom: 4rem;
+            position: relative;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Enhanced Floating Herbal Background */
+        .leaf-bg {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        .leaf {
+            position: absolute;
+            opacity: 0.04;
+            width: 280px;
+            height: 280px;
+            transform-origin: center;
+            filter: blur(0.8px);
+            animation: floatRotate 20s ease-in-out infinite;
+        }
+        
+        .leaf.leaf-1{
+            left: -8%; 
+            top: 8%; 
+            transform: rotate(-15deg) scale(1.1);
+            animation-duration: 25s;
+        }
+        
+        .leaf.leaf-2{
+            right: -10%; 
+            bottom: 12%; 
+            transform: rotate(25deg) scale(1.3); 
+            animation-duration: 30s; 
+            opacity: 0.03;
+            animation-delay: -8s;
+        }
+        
+        .leaf.leaf-3{
+            left: 12%; 
+            bottom: -8%; 
+            transform: rotate(50deg) scale(0.9); 
+            animation-duration: 28s; 
+            opacity: 0.035;
+            animation-delay: -15s;
+        }
+        
+        .leaf.leaf-4{
+            right: 25%; 
+            top: -5%; 
+            transform: rotate(-30deg) scale(0.8); 
+            animation-duration: 35s; 
+            opacity: 0.025;
+            animation-delay: -22s;
+        }
+
+        @keyframes floatRotate {
+            0% { transform: translateY(0) translateX(0) rotate(0deg) scale(1); }
+            25% { transform: translateY(-20px) translateX(8px) rotate(8deg) scale(1.02); }
+            50% { transform: translateY(-15px) translateX(-6px) rotate(15deg) scale(0.98); }
+            75% { transform: translateY(-25px) translateX(10px) rotate(5deg) scale(1.01); }
+            100% { transform: translateY(0) translateX(0) rotate(0deg) scale(1); }
+        }
+
+        .container{
+            max-width: 1300px;
+            margin: 1.5rem auto;
+            padding: 0 1.25rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Enhanced Gradient Header */
+        .header{
+            background: linear-gradient(135deg, 
+                hsl(var(--accent1)) 0%, 
+                hsl(120 40% 35%) 35%, 
+                hsl(var(--accent2)) 70%, 
+                hsl(var(--accent3)) 100%
+            );
+            color: white;
+            padding: 1.75rem;
+            border-radius: calc(var(--card-radius) + 0.25rem);
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            box-shadow: var(--shadow-soft), 0 0 0 1px rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(8px);
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.1) 50%, transparent 100%);
+            pointer-events: none;
+        }
+        
+        .header .icon{
+            background: rgba(255,255,255,0.22);
+            padding: 1rem;
+            border-radius: 50%;
+            display: inline-grid;
+            place-items: center;
+            font-size: 1.4rem;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.15);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .header h1{
+            font-size: 1.75rem; 
+            margin: 0; 
+            letter-spacing: -0.025em;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .header p{
+            margin: 0; 
+            opacity: 0.9; 
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        /* Premium Glassmorphism Statistics Cards */
+        .stats-grid{
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.25rem;
+            margin-top: 1.5rem;
+            z-index: 2;
+            position: relative;
+        }
+        
+        .stat-card{
+            background: linear-gradient(145deg, 
+                rgba(255,255,255,0.7) 0%, 
+                rgba(255,255,255,0.5) 50%,
+                rgba(255,255,255,0.4) 100%
+            );
+            border-radius: var(--card-radius);
+            padding: 1.5rem 1.25rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid rgba(var(--glass-border)/0.2);
+            box-shadow: var(--shadow-soft);
+            transform-style: preserve-3d;
+            transition: all var(--transition-smooth);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            min-height: 140px;
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, 
+                rgba(120,180,140,0.05) 0%, 
+                transparent 50%, 
+                rgba(200,150,60,0.05) 100%
+            );
+            opacity: 0;
+            transition: opacity var(--transition-smooth);
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-8px) scale(1.03) rotateX(5deg);
+            box-shadow: var(--shadow-hover), 0 0 0 1px rgba(255,255,255,0.3);
+            border-color: rgba(var(--glass-border)/0.4);
+        }
+        
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+        
+        .stat-card:active {
+            transform: translateY(-4px) scale(1.01);
+        }
+        
+        .stat-icon {
+            font-size: 1.75rem;
+            margin-bottom: 0.75rem;
+            opacity: 0.8;
+            transition: all var(--transition-fast);
+        }
+        
+        .stat-card:hover .stat-icon {
+            transform: scale(1.1) rotate(5deg);
+            opacity: 1;
+        }
+        
+        .stat-number{
+            font-weight: 800; 
+            font-size: 2rem; 
+            color: hsl(var(--accent1));
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all var(--transition-fast);
+        }
+        
+        .stat-card:hover .stat-number {
+            color: hsl(var(--accent2));
+            transform: scale(1.05);
+        }
+        
+        .stat-label{
+            font-size: 0.9rem; 
+            color: hsl(var(--muted));
+            text-align: center;
+            font-weight: 500;
+            letter-spacing: 0.025em;
+        }
+
+        /* 3D Tilt Effect for Interactive Elements */
+        .tilt-3d {
+            transform-style: preserve-3d;
+            transition: transform var(--transition-smooth);
+            will-change: transform;
+        }
+        
+        .tilt-3d:hover {
+            transform: perspective(1000px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg)) translateZ(20px);
+        }
+
+        /* Enhanced Button Styles */
+        .btn {
+            padding: 0.75rem 1.25rem;
+            border-radius: 0.75rem;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all var(--transition-fast);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+        }
+        
+        .btn:hover::before {
+            opacity: 1;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, hsl(var(--accent1)), hsl(120 40% 30%));
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,128,64,0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0,128,64,0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, hsl(var(--accent2)), hsl(var(--accent3)));
+            color: white;
+            box-shadow: 0 4px 15px rgba(200,150,60,0.3);
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(200,150,60,0.4);
+        }
+
+        /* Enhanced Input Styles */
+        .search-input, .select {
+            padding: 0.85rem 1.1rem;
+            border-radius: 0.75rem;
+            border: 1px solid rgba(16,24,32,0.08);
+            outline: none;
+            font-size: 1rem;
+            transition: all var(--transition-fast);
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(8px);
+            font-weight: 500;
+        }
+        
+        .search-input:focus, .select:focus {
+            box-shadow: 0 0 0 3px rgba(120,180,140,0.15), 0 8px 25px rgba(16,24,32,0.1);
+            transform: translateY(-2px);
+            background: rgba(255,255,255,0.95);
+            border-color: hsl(var(--accent1));
+        }
+
+        /* Sticky Glass Search/Filter Bar with Auto-Hide */
+        .search-filters {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: calc(var(--card-radius) + 0.1rem);
+            background: linear-gradient(145deg, 
+                rgba(255,255,255,0.8) 0%, 
+                rgba(255,255,255,0.6) 100%
+            );
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(var(--glass-border)/0.15);
+            box-shadow: var(--shadow-soft), 0 0 0 1px rgba(255,255,255,0.2);
+            position: sticky;
+            top: 0.5rem;
+            z-index: 10;
+            transition: all var(--transition-smooth), transform 300ms ease, opacity 300ms ease;
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .search-filters.collapsed {
+            transform: translateY(-80%);
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        
+        .search-filters.collapsed:hover,
+        .search-filters.collapsed.force-show {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        /* Mobile-specific auto-hide */
+        @media (max-width: 768px) {
+            .search-filters.collapsed {
+                transform: translateY(-90%);
+                opacity: 0.1;
+            }
+            
+            .search-filters.collapsed::after {
+                content: '⬇️ Tap to expand filters';
+                position: absolute;
+                bottom: -25px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: rgba(0,0,0,0.7);
+                color: white;
+                padding: 4px 12px;
+                border-radius: 12px;
+                font-size: 0.75rem;
+                white-space: nowrap;
+                pointer-events: all;
+            }
+        }
+        
+        .search-filters:hover {
+            box-shadow: var(--shadow-hover), 0 0 0 1px rgba(255,255,255,0.3);
+            background: linear-gradient(145deg, 
+                rgba(255,255,255,0.85) 0%, 
+                rgba(255,255,255,0.7) 100%
+            );
+        }
+        
+        .search-row {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group, .checkbox-group {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 2rem;
+            background: rgba(255,255,255,0.6);
+            border: 1px solid rgba(16,24,32,0.08);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .checkbox-item:hover {
+            background: rgba(255,255,255,0.8);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16,24,32,0.08);
+        }
+        
+        .file-input {
+            display: none;
+        }
+
+        /* Enhanced Disease Cards with Animations */
+        .diseases-grid {
+            margin-top: 1.75rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 1.25rem;
+        }
+
+        .disease-card {
+            background: linear-gradient(145deg, 
+                rgba(255,255,255,0.7) 0%, 
+                rgba(255,255,255,0.5) 50%,
+                rgba(255,255,255,0.4) 100%
+            );
+            border-radius: var(--card-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            border: 1px solid rgba(var(--glass-border)/0.15);
+            transition: all var(--transition-smooth);
+            transform-style: preserve-3d;
+            cursor: pointer;
+            position: relative;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            backdrop-filter: blur(var(--glass-blur));
+            animation: fadeInUp 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+        }
+        
+        .disease-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, 
+                rgba(120,180,140,0.03) 0%, 
+                transparent 50%, 
+                rgba(200,150,60,0.03) 100%
+            );
+            opacity: 0;
+            transition: opacity var(--transition-smooth);
+        }
+        
+        .disease-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: var(--shadow-hover), 0 0 0 1px rgba(255,255,255,0.3);
+        }
+        
+        .disease-card:hover::before {
+            opacity: 1;
+        }
+        
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .disease-header {
+            padding: 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            background: linear-gradient(135deg, 
+                rgba(255,255,255,0.1) 0%, 
+                transparent 100%
+            );
+            backdrop-filter: blur(4px);
+            position: relative;
+        }
+        
+        .disease-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin: 0 0 0.5rem 0;
+            color: hsl(var(--fg));
+            line-height: 1.3;
+        }
+        
+        .dosha-badges {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+        
+        .dosha-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, 
+                rgba(120,180,140,0.15) 0%, 
+                rgba(120,180,140,0.1) 100%
+            );
+            color: hsl(var(--accent1));
+            border: 1px solid rgba(120,180,140,0.2);
+        }
+        
+        .symptom-count {
+            font-size: 0.85rem;
+            color: hsl(var(--muted));
+            background: rgba(255,255,255,0.6);
+            padding: 0.4rem 0.8rem;
+            border-radius: 1rem;
+            border: 1px solid rgba(16,24,32,0.08);
+            font-weight: 600;
+        }
+
+        /* Collapsible Disease Details */
+        .disease-details {
+            padding: 0 1.25rem 1.25rem;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: max-height var(--transition-smooth), 
+                       opacity var(--transition-fast), 
+                       transform var(--transition-fast);
+        }
+        
+        .disease-details.expanded {
+            max-height: 2000px;
+            opacity: 1;
+            transform: translateY(0);
+            transition: max-height var(--transition-smooth), 
+                       opacity var(--transition-smooth) 0.1s, 
+                       transform var(--transition-smooth) 0.1s;
+        }
+        
+        .disease-section {
+            margin-bottom: 1rem;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: slideInContent 400ms ease both;
+        }
+        
+        .expanded .disease-section:nth-child(1) { animation-delay: 0.1s; }
+        .expanded .disease-section:nth-child(2) { animation-delay: 0.15s; }
+        .expanded .disease-section:nth-child(3) { animation-delay: 0.2s; }
+        .expanded .disease-section:nth-child(4) { animation-delay: 0.25s; }
+        .expanded .disease-section:nth-child(5) { animation-delay: 0.3s; }
+        .expanded .disease-section:nth-child(6) { animation-delay: 0.35s; }
+        
+        @keyframes slideInContent {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .section-title {
+            font-size: 0.85rem;
+            color: hsl(var(--accent1));
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            position: relative;
+            padding-left: 0.75rem;
+        }
+        
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 12px;
+            background: linear-gradient(135deg, hsl(var(--accent1)), hsl(var(--accent2)));
+            border-radius: 2px;
+        }
+        
+        .section-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        .section-list li {
+            padding: 0.4rem 0;
+            border-bottom: 1px solid rgba(16,24,32,0.06);
+            font-size: 0.95rem;
+            color: hsl(var(--fg));
+            transition: color var(--transition-fast);
+        }
+        
+        .section-list li:hover {
+            color: hsl(var(--accent1));
+        }
+        
+        .toggle-btn {
+            background: linear-gradient(135deg, hsl(var(--accent1)), hsl(120 40% 30%));
+            color: white;
+            border: none;
+            padding: 0.4rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            transition: all var(--transition-fast);
+        }
+        
+        .toggle-btn:hover {
+            transform: translateY(-1px) scale(1.05);
+            box-shadow: 0 4px 12px rgba(0,128,64,0.3);
+        }
+
+        /* Quick Preview Tooltip */
+        .quickview {
+            position: fixed;
+            pointer-events: none;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(12px);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            box-shadow: 0 12px 40px rgba(16,24,32,0.15);
+            border: 1px solid rgba(var(--glass-border)/0.2);
+            font-size: 0.9rem;
+            opacity: 0;
+            transform: translateY(10px) scale(0.95);
+            transition: all var(--transition-fast);
+            z-index: 1000;
+            max-width: 280px;
+        }
+        
+        .quickview.visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        
+        .quickview-title {
+            font-weight: 700;
+            color: hsl(var(--accent1));
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+        
+        .quickview-content {
+            color: hsl(var(--fg));
+            line-height: 1.4;
+        }
+
+        /* Enhanced Pagination */
+        .pagination {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .pagination-info {
+            color: hsl(var(--muted));
+            font-weight: 500;
+        }
+        
+        .page-btn {
+            padding: 0.6rem 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid rgba(16,24,32,0.08);
+            background: rgba(255,255,255,0.8);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            font-weight: 600;
+            backdrop-filter: blur(6px);
+        }
+        
+        .page-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16,24,32,0.1);
+            background: rgba(255,255,255,0.95);
+        }
+        
+        .page-btn.active {
+            background: linear-gradient(135deg, hsl(var(--accent1)), hsl(120 40% 30%));
+            color: white;
+            border-color: hsl(var(--accent1));
+            box-shadow: 0 4px 15px rgba(0,128,64,0.3);
+        }
+        
+        .page-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* No Results State */
+        .no-results {
+            padding: 3rem 2rem;
+            text-align: center;
+            background: linear-gradient(145deg, rgba(255,255,255,0.7), rgba(255,255,255,0.4));
+            border-radius: var(--card-radius);
+            backdrop-filter: blur(var(--glass-blur));
+            border: 1px solid rgba(var(--glass-border)/0.15);
+            margin-top: 1.5rem;
+        }
+        
+        .no-results.hidden {
+            display: none;
+        }
+        
+        .no-results h3 {
+            color: hsl(var(--accent1));
+            margin-bottom: 0.5rem;
+        }
+        
+        .no-results p {
+            color: hsl(var(--muted));
+        }
+
+        /* Mobile Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 0.75rem;
+                margin: 0.75rem auto;
+            }
+            
+            .header {
+                flex-direction: column;
+                text-align: center;
+                padding: 1.25rem;
+            }
+            
+            .header h1 {
+                font-size: 1.4rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.75rem;
+                margin-top: 1rem;
+            }
+            
+            .search-filters {
+                padding: 0.75rem;
+                margin-top: 1rem;
+                top: 0.25rem;
+            }
+            
+            .search-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.75rem;
+            }
+            
+            .search-input {
+                min-width: 100%;
+                padding: 0.7rem 0.9rem;
+                font-size: 0.95rem;
+            }
+            
+            .filter-group {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 0.5rem;
+            }
+            
+            .filter-group select {
+                padding: 0.6rem;
+                font-size: 0.9rem;
+            }
+            
+            .checkbox-group {
+                justify-content: center;
+                gap: 0.5rem;
+            }
+            
+            .checkbox-item {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.85rem;
+            }
+            
+            .diseases-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+                margin-top: 1rem;
+            }
+            
+            .pagination {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+            
+            .quickview {
+                display: none; /* Hide tooltips on mobile */
+            }
+            
+            /* Compact button group on mobile */
+            .search-row:last-child > div:last-child {
+                margin-left: 0;
+                margin-top: 0.5rem;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 0.5rem;
+                margin: 0.5rem auto;
+            }
+            
+            .header {
+                padding: 1rem;
+            }
+            
+            .header .icon {
+                padding: 0.75rem;
+                font-size: 1.2rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+            
+            .stat-card {
+                padding: 1rem;
+                min-height: 100px;
+            }
+            
+            .search-filters {
+                padding: 0.6rem;
+                border-radius: 0.75rem;
+            }
+            
+            .search-input {
+                padding: 0.6rem 0.8rem;
+                border-radius: 0.6rem;
+            }
+            
+            .btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .checkbox-item {
+                padding: 0.35rem 0.55rem;
+                font-size: 0.8rem;
+            }
+            
+            .disease-header {
+                padding: 1rem;
+            }
+            
+            .disease-details {
+                padding: 0 1rem 1rem;
+            }
+            
+            .disease-title {
+                font-size: 1rem;
+            }
+            
+            /* Ultra compact filter layout for very small screens */
+            .search-row:last-child {
+                text-align: center;
+            }
+            
+            .search-row:last-child > div:first-child {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.5rem;
+            }
+            
+            .checkbox-group {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.4rem;
+                max-width: 280px;
+                margin: 0 auto;
+            }
+        }
+
+        /* Fullscreen Mode Styles */
+        .fullscreen-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: linear-gradient(135deg, hsl(var(--accent1)), hsl(120 40% 30%));
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0,128,64,0.4);
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .fullscreen-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 30px rgba(0,128,64,0.5);
+        }
+        
+        .fullscreen-toggle:active {
+            transform: scale(0.95);
+        }
+        
+        /* Fullscreen mode */
+        body.fullscreen-mode {
+            overflow: hidden;
+        }
+        
+        body.fullscreen-mode .header,
+        body.fullscreen-mode .stats-grid,
+        body.fullscreen-mode .search-filters {
+            display: none;
+        }
+        
+        body.fullscreen-mode .container {
+            position: fixed;
+            inset: 0;
+            max-width: 100%;
+            margin: 0;
+            padding: 1rem;
+            background: linear-gradient(135deg, 
+                hsl(120 45% 97%) 0%, 
+                hsl(45 55% 96%) 35%, 
+                hsl(25 45% 97%) 100%
+            );
+            overflow-y: auto;
+            z-index: 100;
+        }
+        
+        body.fullscreen-mode #results-container {
+            height: calc(100vh - 2rem);
+            overflow-y: auto;
+        }
+        
+        body.fullscreen-mode .diseases-grid {
+            margin-top: 0;
+            padding-top: 0;
+        }
+        
+        body.fullscreen-mode .pagination {
+            position: sticky;
+            bottom: 0;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(12px);
+            padding: 1rem;
+            margin-top: 1rem;
+            border-radius: var(--card-radius);
+            box-shadow: 0 -10px 30px rgba(16,24,32,0.1);
+        }
+        
+        /* Fullscreen header for context */
+        .fullscreen-header {
+            display: none;
+            position: sticky;
+            top: 0;
+            background: linear-gradient(135deg, 
+                rgba(255,255,255,0.95) 0%, 
+                rgba(255,255,255,0.85) 100%
+            );
+            backdrop-filter: blur(16px);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: var(--card-radius);
+            text-align: center;
+            z-index: 10;
+            box-shadow: var(--shadow-soft);
+        }
+        
+        body.fullscreen-mode .fullscreen-header {
+            display: block;
+        }
+        
+        .fullscreen-header h2 {
+            margin: 0;
+            color: hsl(var(--accent1));
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+        
+        .fullscreen-header p {
+            margin: 0.25rem 0 0 0;
+            color: hsl(var(--muted));
+            font-size: 0.9rem;
+        }
+
+        /* Mobile fullscreen adjustments */
+        @media (max-width: 768px) {
+            .fullscreen-toggle {
+                bottom: 15px;
+                right: 15px;
+                width: 50px;
+                height: 50px;
+                font-size: 1.3rem;
+            }
+            
+            body.fullscreen-mode .container {
+                padding: 0.75rem;
+            }
+            
+            body.fullscreen-mode #results-container {
+                height: calc(100vh - 1.5rem);
+            }
+            
+            body.fullscreen-mode .pagination {
+                padding: 0.75rem;
+            }
+        }
+    </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+/* Professional tweaks */
+/* Professional tweaks */
+.pro-stats .stat-pill { font-size: 0.95rem; }
+.insights-card h3, .insights-card h4 { font-weight: 800; }
+.copy-btn { padding:0.25rem 0.6rem; border-radius:0.5rem; border:1px solid rgba(0,0,0,0.08); background:transparent; cursor:pointer; font-weight:600; }
+.card-actions { display:flex; gap:0.5rem; margin-top:0.6rem; }
+</style></head>
+<body>
+<!-- Enhanced Floating Herbal Decorations -->
+<div aria-hidden="true" class="leaf-bg">
+<svg class="leaf leaf-1" viewbox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<radialgradient cx="0.5" cy="0.3" id="leafGrad1" r="0.8">
+<stop offset="0%" style="stop-color:rgba(80,140,100,1);stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:rgba(40,100,60,1);stop-opacity:0.8"></stop>
+</radialgradient>
+</defs>
+<path d="M100 20c35 0 70 25 70 60c0 35-35 70-70 70s-70-35-70-70c0-35 35-60 70-60z" fill="url(#leafGrad1)"></path>
+<path d="M100 25c-5 15-10 35-5 55c8-20 15-35 5-55z" fill="rgba(255,255,255,0.1)"></path>
+</svg>
+<svg class="leaf leaf-2" viewbox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<radialgradient cx="0.4" cy="0.4" id="leafGrad2" r="0.9">
+<stop offset="0%" style="stop-color:rgba(200,150,60,1);stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:rgba(160,110,40,1);stop-opacity:0.9"></stop>
+</radialgradient>
+</defs>
+<path d="M100 15c40 0 75 30 75 70s-35 75-75 75s-75-35-75-75s35-70 75-70z" fill="url(#leafGrad2)"></path>
+</svg>
+<svg class="leaf leaf-3" viewbox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<radialgradient cx="0.6" cy="0.2" id="leafGrad3" r="0.7">
+<stop offset="0%" style="stop-color:rgba(100,160,120,1);stop-opacity:1"></stop>
+<stop offset="100%" style="stop-color:rgba(60,120,80,1);stop-opacity:0.7"></stop>
+</radialgradient>
+</defs>
+<path d="M100 25c30 0 65 25 65 65s-35 65-65 65s-65-35-65-65s35-65 65-65z" fill="url(#leafGrad3)"></path>
+</svg>
+<svg class="leaf leaf-4" viewbox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<path d="M100 30c25 0 55 20 55 55s-30 55-55 55s-55-30-55-55s30-55 55-55z" fill="rgba(90,150,70,0.8)"></path>
+</svg>
+</div>
+<div class="container">
+<header class="header" role="banner">
+<div aria-hidden="true" class="icon">🌿</div>
+<div>
+<h1>Ayurvedic Disease Database by PARTH</h1>
+<p>Comprehensive Traditional Medicine Reference — Enhanced Experience</p>
+</div>
+</header>
+<div class="pro-stats" id="pro-stats" style="margin-top:1rem; display:flex; gap:1rem; align-items:center; flex-wrap:wrap; z-index:3;">
+<div class="stat-pill" style="background:linear-gradient(90deg, rgba(255,255,255,0.9), rgba(255,255,255,0.8)); padding:0.6rem 0.9rem; border-radius:999px; box-shadow:var(--shadow-soft); display:flex; gap:0.6rem; align-items:center;">
+<strong style="font-size:1rem; color:hsl(var(--accent1));">Total</strong>
+<span id="pill-total" style="font-weight:700;">0</span>
+</div>
+<div class="stat-pill" style="background:transparent; padding:0.45rem 0.75rem; border-radius:999px; border:1px solid rgba(0,0,0,0.06); display:flex; gap:0.5rem; align-items:center;">
+<span style="font-size:0.95rem; color:hsl(var(--muted));">Vata</span><span id="pill-vata" style="font-weight:700;">0</span>
+</div>
+<div class="stat-pill" style="background:transparent; padding:0.45rem 0.75rem; border-radius:999px; border:1px solid rgba(0,0,0,0.06); display:flex; gap:0.5rem; align-items:center;">
+<span style="font-size:0.95rem; color:hsl(var(--muted));">Pitta</span><span id="pill-pitta" style="font-weight:700;">0</span>
+</div>
+<div class="stat-pill" style="background:transparent; padding:0.45rem 0.75rem; border-radius:999px; border:1px solid rgba(0,0,0,0.06); display:flex; gap:0.5rem; align-items:center;">
+<span style="font-size:0.95rem; color:hsl(var(--muted));">Kapha</span><span id="pill-kapha" style="font-weight:700;">0</span>
+</div>
+<div style="margin-left:auto; display:flex; gap:0.5rem; align-items:center;">
+<button class="btn" id="btn-all" style="background:transparent; border:1px solid rgba(0,0,0,0.06);">All</button>
+<button class="btn" id="btn-vata" style="background:linear-gradient(135deg,hsl(var(--accent1)),hsl(var(--accent2))); color:white;">Vata</button>
+<button class="btn" id="btn-pitta" style="background:linear-gradient(135deg,hsl(var(--accent2)),hsl(var(--accent3))); color:white;">Pitta</button>
+<button class="btn" id="btn-kapha" style="background:linear-gradient(135deg,hsl(var(--accent3)),hsl(var(--accent1))); color:white;">Kapha</button>
+</div>
+</div>
+
+<div aria-label="Statistics" class="stats-grid" role="region">
+<div class="stat-card tilt-3d" tabindex="0">
+<div aria-hidden="true" class="stat-icon">📊</div>
+<div class="stat-number" id="total-diseases">6</div>
+<div class="stat-label">Total Diseases</div>
+</div>
+<div class="stat-card tilt-3d" tabindex="0">
+<div aria-hidden="true" class="stat-icon">🔍</div>
+<div class="stat-number" id="filtered-results">6</div>
+<div class="stat-label">Filtered Results</div>
+</div>
+<div class="stat-card tilt-3d" tabindex="0">
+<div aria-hidden="true" class="stat-icon">📋</div>
+<div class="stat-number" id="avg-symptoms">6</div>
+<div class="stat-label">Avg. Symptoms</div>
+</div>
+<div class="stat-card tilt-3d" tabindex="0">
+<div aria-hidden="true" class="stat-icon">🌿</div>
+<div class="stat-number" id="dosha-types">3</div>
+<div class="stat-label">Dosha Types</div>
+</div>
+</div>
+<!-- Enhanced Sticky Search/Filter Bar -->
+<div aria-label="Search and filters" class="search-filters" role="search">
+<div class="search-row">
+<input aria-label="Search diseases" class="search-input" id="search-input" placeholder="🔍 Search diseases, symptoms, treatments..." type="text"/>
+<div class="filter-group">
+<label for="sort-select" style="font-size:0.9rem; color: hsl(var(--muted)); font-weight: 600;">Sort by:</label>
+<select aria-label="Sort by" class="select" id="sort-select">
+<option value="disease">Disease Name</option>
+<option value="dosha">Dosha</option>
+<option value="symptoms">Symptoms Count</option>
+<option value="treatment">Treatment Count</option>
+</select>
+<select aria-label="Sort order" class="select" id="sort-order">
+<option value="asc">Ascending</option>
+<option value="desc">Descending</option>
+</select>
+</div>
+</div>
+<div class="search-row" style="margin-top: 1rem;">
+<div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+<label style="font-size: 0.9rem; color: hsl(var(--muted)); font-weight: 600;">Filter by Dosha:</label>
+<div aria-label="Dosha filters" class="checkbox-group" id="dosha-filters">
+<label class="checkbox-item">
+<input id="vata" type="checkbox" value="Vata"/>
+<span>Vata</span>
+</label>
+<label class="checkbox-item">
+<input id="pitta" type="checkbox" value="Pitta"/>
+<span>Pitta</span>
+</label>
+<label class="checkbox-item">
+<input id="kapha" type="checkbox" value="Kapha"/>
+<span>Kapha</span>
+</label>
+<label class="checkbox-item">
+<input id="ama" type="checkbox" value="Ama"/>
+<span>Ama</span>
+</label>
+</div>
+</div>
+<div style="margin-left: auto; display: flex; gap: 0.75rem; align-items: center;">
+<input accept=".json" class="file-input" id="import-file" type="file"/>
+<label class="btn btn-primary" for="import-file">📁 Import JSON</label>
+<button class="btn btn-secondary" id="export-btn" title="Export filtered data">📤 Export</button>
+</div>
+</div>
+</div>
+<!-- Interactive Disease Cards Grid -->
+<div aria-live="polite" id="results-container">
+<div class="diseases-grid" id="diseases-grid" role="list"></div>
+<div class="no-results hidden" id="no-results">
+<div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.6;">🔍</div>
+<h3>No Results Found</h3>
+<p>Try adjusting your search terms or filters</p>
+</div>
+</div>
+<!-- Enhanced Pagination -->
+
+<div id="dataset-insights" style="margin-top:2rem; display:grid; grid-template-columns: 1fr 300px; gap:1rem; align-items:start;">
+<div class="insights-card" style="background:linear-gradient(145deg, rgba(255,255,255,0.9), rgba(255,255,255,0.8)); padding:1rem; border-radius:1rem; box-shadow:var(--shadow-soft);">
+<h3 style="margin:0 0 0.5rem 0; color:hsl(var(--accent1));">Dataset Insights</h3>
+<div id="top-symptoms" style="font-size:0.95rem; color:hsl(var(--fg));"></div>
+</div>
+<div class="insights-card" style="background:linear-gradient(145deg, rgba(255,255,255,0.95), rgba(255,255,255,0.9)); padding:1rem; border-radius:1rem; box-shadow:var(--shadow-soft);">
+<h4 style="margin:0 0 0.5rem 0; color:hsl(var(--accent1));">Dosha Distribution</h4>
+<svg aria-hidden="true" height="180" id="dosha-chart" viewbox="0 0 260 180" width="260"></svg>
+<div style="display:flex;flex-direction:column;align-items:center;">
+    <h3>Dosha Distribution</h3>
+    <div id="doshaChart" style="width:220px;height:220px;"></div>
+    <div id="dosha-legend" style="display:flex;flex-direction:column;margin-top:10px;"></div>
+</div>
+<div id="dosha-legend" style="display:flex; gap:0.5rem; margin-top:0.6rem;"></div>
+</div>
+</div>
+<div aria-label="Pagination controls" class="pagination">
+<div class="pagination-info" id="pagination-info"></div>
+<div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+<button class="page-btn" id="prev-btn">‹ Previous</button>
+<div id="page-numbers"></div>
+<button class="page-btn" id="next-btn">Next ›</button>
+</div>
+<div style="display: flex; gap: 0.5rem; align-items: center;">
+<label style="color: hsl(var(--muted)); font-weight: 500;">Per page:</label>
+<select class="select" id="items-per-page">
+<option value="5">5</option>
+<option selected="" value="10">10</option>
+<option value="20">20</option>
+<option value="50">50</option>
+</select>
+</div>
+</div>
+</div>
+<!-- Fullscreen Toggle Button -->
+<button aria-label="Toggle fullscreen view" class="fullscreen-toggle" id="fullscreen-toggle" title="Toggle Fullscreen View">
+        📱
+    </button>
+<!-- Fullscreen Header (shown only in fullscreen mode) -->
+<div class="fullscreen-header">
+<h2>🌿 Ayurvedic Diseases - Fullscreen View</h2>
+<p id="fullscreen-count">Showing all diseases</p>
+</div>
+<!-- Quickview Tooltip -->
+<div aria-hidden="true" class="quickview" id="quickview" role="tooltip">
+<div class="quickview-title">Disease Name</div>
+<div class="quickview-content">Quick preview content...</div>
+</div>
+<style>
+/* Focus states for accessibility */
+.search-input:focus,
+.select:focus,
+.btn:focus,
+.page-btn:focus,
+.disease-card:focus {
+    outline: 3px solid rgba(120,180,140,0.3);
+    outline-offset: 2px;
+}
+
+/* Highlight search terms */
+mark {
+    background: rgba(255,180,80,0.3);
+    padding: 0.1rem 0.2rem;
+    border-radius: 3px;
+    color: inherit;
+}
+</style>
+<script>
+        /* === COMPLETE AYURVEDIC DISEASE DATABASE WITH ENHANCED UI === */
+        
+        const sampleDiseases = [
+            {
+                disease: "Abaddha Medas (Loose Fat Syndrome)",
+                dosha: ["Kapha", "Vata"],
+                causes: [
+                    "Excessive consumption of heavy, oily foods",
+                    "Sedentary lifestyle",
+                    "Disturbed metabolism",
+                    "Irregular eating habits",
+                    "Stress and anxiety"
+                ],
+                symptoms: [
+                    "Excessive accumulation of loose fat",
+                    "Sluggishness and lethargy",
+                    "Heaviness in the body",
+                    "Difficulty in movement",
+                    "Shortness of breath",
+                    "Joint pain",
+                    "Digestive issues"
+                ],
+                treatment: [
+                    "Panchakarma therapy",
+                    "Regular exercise and yoga",
+                    "Udwartana (herbal powder massage)",
+                    "Lekhana Basti (medicated enema)",
+                    "Fasting therapy (Langhana)",
+                    "Steam therapy (Swedana)"
+                ],
+                diet: [
+                    "Light, warm, and easily digestible foods",
+                    "Bitter and astringent tastes",
+                    "Avoid heavy, oily, and sweet foods",
+                    "Include barley, quinoa, and millet",
+                    "Green leafy vegetables",
+                    "Warm water and herbal teas"
+                ],
+                herbs: [
+                    "Guggulu",
+                    "Triphala",
+                    "Punarnava",
+                    "Vrikshamla",
+                    "Shilajit",
+                    "Medohar Vidangadi Lauh"
+                ],
+                precautions: [
+                    "Avoid daytime sleeping",
+                    "Regular meal timings",
+                    "Gradual weight reduction",
+                    "Stress management",
+                    "Regular health monitoring"
+                ]
+            },
+            {
+                disease: "Amavata (Rheumatoid Arthritis)",
+                dosha: ["Vata", "Ama"],
+                causes: [
+                    "Improper digestion leading to Ama formation",
+                    "Irregular eating habits",
+                    "Consumption of incompatible foods",
+                    "Sedentary lifestyle",
+                    "Mental stress"
+                ],
+                symptoms: [
+                    "Joint pain and stiffness",
+                    "Morning stiffness",
+                    "Swelling in joints",
+                    "Fatigue and weakness",
+                    "Loss of appetite",
+                    "Fever with joint pain"
+                ],
+                treatment: [
+                    "Ama pachana (digestive fire enhancement)",
+                    "Panchakarma therapy",
+                    "Abhyanga (oil massage)",
+                    "Swedana (sweating therapy)",
+                    "Yogic practices",
+                    "Meditation"
+                ],
+                diet: [
+                    "Light, warm, and easily digestible food",
+                    "Avoid heavy, cold, and oily foods",
+                    "Include ginger, turmeric, and garlic",
+                    "Warm soups and broths",
+                    "Avoid curd and fermented foods"
+                ],
+                herbs: [
+                    "Guggulu",
+                    "Shallaki",
+                    "Ashwagandha",
+                    "Nirgundi",
+                    "Rasna",
+                    "Amavatahari Ras"
+                ],
+                precautions: [
+                    "Avoid exposure to cold and dampness",
+                    "Regular gentle exercise",
+                    "Stress management",
+                    "Proper sleep schedule",
+                    "Avoid incompatible food combinations"
+                ]
+            },
+            {
+                disease: "Hridroga (Heart Disease)",
+                dosha: ["Vata", "Pitta", "Kapha"],
+                causes: [
+                    "Excessive mental stress",
+                    "High cholesterol diet",
+                    "Sedentary lifestyle",
+                    "Smoking and alcohol",
+                    "Diabetes and hypertension"
+                ],
+                symptoms: [
+                    "Chest pain",
+                    "Shortness of breath",
+                    "Irregular heartbeat",
+                    "Fatigue",
+                    "Sweating",
+                    "Anxiety"
+                ],
+                treatment: [
+                    "Satvavajaya chikitsa (psychotherapy)",
+                    "Gentle abhyanga",
+                    "Shirodhara",
+                    "Pranayama",
+                    "Meditation",
+                    "Yoga therapy"
+                ],
+                diet: [
+                    "Heart-healthy diet",
+                    "Reduce salt and sugar",
+                    "Include omega-3 rich foods",
+                    "Fresh fruits and vegetables",
+                    "Avoid processed foods"
+                ],
+                herbs: [
+                    "Arjuna",
+                    "Brahmi",
+                    "Shankhpushpi",
+                    "Jatamansi",
+                    "Punarnava",
+                    "Hridayarnava Ras"
+                ],
+                precautions: [
+                    "Regular cardiac monitoring",
+                    "Stress management",
+                    "Gradual increase in physical activity",
+                    "Avoid sudden exertion",
+                    "Regular medication compliance"
+                ]
+            },
+            {
+                disease: "Madhumeha (Diabetes)",
+                dosha: ["Kapha", "Pitta"],
+                causes: [
+                    "Excessive intake of sweet foods",
+                    "Sedentary lifestyle",
+                    "Genetic predisposition",
+                    "Stress and anxiety",
+                    "Obesity"
+                ],
+                symptoms: [
+                    "Frequent urination",
+                    "Excessive thirst",
+                    "Unexplained weight loss",
+                    "Fatigue",
+                    "Slow healing wounds",
+                    "Blurred vision"
+                ],
+                treatment: [
+                    "Ahar niyama (dietary regulation)",
+                    "Vihar niyama (lifestyle modification)",
+                    "Panchakarma",
+                    "Regular exercise",
+                    "Yoga and pranayama"
+                ],
+                diet: [
+                    "Low glycemic index foods",
+                    "High fiber diet",
+                    "Bitter gourd and fenugreek",
+                    "Avoid refined sugars",
+                    "Regular meal timings"
+                ],
+                herbs: [
+                    "Gudmar",
+                    "Methi",
+                    "Karela",
+                    "Jamun",
+                    "Neem",
+                    "Chandraprabha Vati"
+                ],
+                precautions: [
+                    "Regular blood sugar monitoring",
+                    "Foot care",
+                    "Eye examinations",
+                    "Weight management",
+                    "Stress reduction"
+                ]
+            },
+            {
+                disease: "Yakrit Vriddhi (Liver Enlargement)",
+                dosha: ["Pitta", "Kapha"],
+                causes: [
+                    "Excessive alcohol consumption",
+                    "Viral hepatitis",
+                    "Fatty liver disease",
+                    "Autoimmune disorders",
+                    "Certain medications"
+                ],
+                symptoms: [
+                    "Abdominal swelling",
+                    "Right upper abdominal pain",
+                    "Fatigue",
+                    "Loss of appetite",
+                    "Nausea",
+                    "Jaundice"
+                ],
+                treatment: [
+                    "Detoxification therapy",
+                    "Virechana (purgation)",
+                    "Liver-supportive herbs",
+                    "Dietary modifications",
+                    "Stress management"
+                ],
+                diet: [
+                    "Light, easily digestible foods",
+                    "Avoid alcohol completely",
+                    "Include bitter vegetables",
+                    "Fresh fruit juices",
+                    "Avoid oily and spicy foods"
+                ],
+                herbs: [
+                    "Kutki",
+                    "Bhumi Amalaki",
+                    "Kalmegh",
+                    "Punarnava",
+                    "Arogyavardhini Vati",
+                    "Liver tonics"
+                ],
+                precautions: [
+                    "Complete alcohol cessation",
+                    "Regular liver function tests",
+                    "Avoid hepatotoxic medications",
+                    "Vaccination as needed",
+                    "Weight management"
+                ]
+            },
+            {
+                disease: "Sandhivata (Osteoarthritis)",
+                dosha: ["Vata"],
+                causes: [
+                    "Age-related degeneration",
+                    "Excessive physical activity",
+                    "Joint injuries",
+                    "Obesity",
+                    "Genetic factors"
+                ],
+                symptoms: [
+                    "Joint pain",
+                    "Stiffness",
+                    "Reduced range of motion",
+                    "Joint swelling",
+                    "Crackling sounds",
+                    "Muscle weakness"
+                ],
+                treatment: [
+                    "Abhyanga with warm oils",
+                    "Swedana therapy",
+                    "Basti (medicated enema)",
+                    "Gentle yoga",
+                    "Physiotherapy",
+                    "Joint mobilization"
+                ],
+                diet: [
+                    "Anti-inflammatory foods",
+                    "Calcium and vitamin D rich foods",
+                    "Avoid cold and dry foods",
+                    "Include warm, cooked meals",
+                    "Turmeric and ginger"
+                ],
+                herbs: [
+                    "Shallaki",
+                    "Guggulu",
+                    "Nirgundi",
+                    "Eranda",
+                    "Rasna",
+                    "Yogaraja Guggulu"
+                ],
+                precautions: [
+                    "Weight management",
+                    "Regular gentle exercise",
+                    "Avoid excessive joint stress",
+                    "Use joint supports",
+                    "Maintain proper posture"
+                ]
+            }
+        ];
+
+        // --- Application State ---
+        let diseases = [...sampleDiseases];
+        let filteredDiseases = [...diseases];
+        let currentPage = 1;
+        let itemsPerPage = 10;
+        let searchTerm = '';
+        let selectedDoshas = [];
+        let sortBy = 'disease';
+        let sortOrder = 'asc';
+
+        // DOM Elements
+        const searchInput = document.getElementById('search-input');
+        const sortSelect = document.getElementById('sort-select');
+        const sortOrderSelect = document.getElementById('sort-order');
+        const doshaCheckboxes = document.querySelectorAll('#dosha-filters input[type="checkbox"]');
+        const diseasesGrid = document.getElementById('diseases-grid');
+        const noResults = document.getElementById('no-results');
+        const totalDiseasesEl = document.getElementById('total-diseases');
+        const filteredResultsEl = document.getElementById('filtered-results');
+        const avgSymptomsEl = document.getElementById('avg-symptoms');
+        const doshaTypesEl = document.getElementById('dosha-types');
+        const paginationInfo = document.getElementById('pagination-info');
+        const pageNumbers = document.getElementById('page-numbers');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const itemsPerPageSelect = document.getElementById('items-per-page');
+        const importFile = document.getElementById('import-file');
+        const exportBtn = document.getElementById('export-btn');
+        const quickviewEl = document.getElementById('quickview');
+
+        // --- Initialization ---
+        function init() {
+            updateStats();
+            filterAndSort();
+            renderDiseases();
+            setupEventListeners();
+            setupInteractiveFeatures();
+            setupAutoHideFilters();
+            setupFullscreenToggle();
+        }
+
+        function setupEventListeners() {
+            searchInput.addEventListener('input', handleSearch);
+            sortSelect.addEventListener('change', handleSortChange);
+            sortOrderSelect.addEventListener('change', handleSortOrderChange);
+            doshaCheckboxes.forEach(cb => cb.addEventListener('change', handleDoshaFilter));
+            prevBtn.addEventListener('click', () => changePage(currentPage - 1));
+            nextBtn.addEventListener('click', () => changePage(currentPage + 1));
+            itemsPerPageSelect.addEventListener('change', handleItemsPerPageChange);
+            importFile.addEventListener('change', handleImport);
+            exportBtn.addEventListener('click', handleExport);
+        }
+
+        // Fullscreen toggle functionality
+        function setupFullscreenToggle() {
+            const fullscreenToggle = document.getElementById('fullscreen-toggle');
+            const fullscreenCount = document.getElementById('fullscreen-count');
+            let isFullscreen = false;
+            
+            fullscreenToggle.addEventListener('click', () => {
+                isFullscreen = !isFullscreen;
+                
+                if (isFullscreen) {
+                    // Enter fullscreen mode
+                    document.body.classList.add('fullscreen-mode');
+                    fullscreenToggle.innerHTML = '❌';
+                    fullscreenToggle.title = 'Exit Fullscreen View';
+                    fullscreenToggle.setAttribute('aria-label', 'Exit fullscreen view');
+                    
+                    // Update fullscreen header count
+                    updateFullscreenCount();
+                    
+                    // Scroll to top
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                    
+                } else {
+                    // Exit fullscreen mode
+                    document.body.classList.remove('fullscreen-mode');
+                    fullscreenToggle.innerHTML = '📱';
+                    fullscreenToggle.title = 'Toggle Fullscreen View';
+                    fullscreenToggle.setAttribute('aria-label', 'Toggle fullscreen view');
+                }
+            });
+            
+            // ESC key to exit fullscreen
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && isFullscreen) {
+                    fullscreenToggle.click();
+                }
+            });
+            
+            function updateFullscreenCount() {
+                const totalResults = filteredDiseases.length;
+                const currentResults = Math.min(itemsPerPage, totalResults - (currentPage - 1) * itemsPerPage);
+                
+                if (totalResults === 0) {
+                    fullscreenCount.textContent = 'No diseases found';
+                } else if (totalResults <= itemsPerPage) {
+                    fullscreenCount.textContent = `Showing all ${totalResults} diseases`;
+                } else {
+                    const startItem = (currentPage - 1) * itemsPerPage + 1;
+                    const endItem = Math.min(currentPage * itemsPerPage, totalResults);
+                    fullscreenCount.textContent = `Showing ${startItem}-${endItem} of ${totalResults} diseases`;
+                }
+            }
+            
+            // Update count when data changes
+            const originalRenderDiseases = renderDiseases;
+            renderDiseases = function() {
+                originalRenderDiseases.call(this);
+                if (isFullscreen) {
+                    updateFullscreenCount();
+                }
+            };
+        }
+
+        // Auto-hide filters functionality
+        function setupAutoHideFilters() {
+            let lastScrollY = window.scrollY;
+            let ticking = false;
+            let hideTimeout = null;
+            const searchFilters = document.querySelector('.search-filters');
+            
+            function updateFiltersVisibility() {
+                const currentScrollY = window.scrollY;
+                const scrollDirection = currentScrollY > lastScrollY ? 'down' : 'up';
+                const isScrollingFast = Math.abs(currentScrollY - lastScrollY) > 5;
+                
+                // Clear any existing timeout
+                clearTimeout(hideTimeout);
+                
+                // Show filters when scrolling up or at top
+                if (scrollDirection === 'up' || currentScrollY < 50) {
+                    searchFilters.classList.remove('collapsed');
+                    searchFilters.classList.add('force-show');
+                }
+                // Hide filters when scrolling down (with delay)
+                else if (scrollDirection === 'down' && isScrollingFast && currentScrollY > 100) {
+                    hideTimeout = setTimeout(() => {
+                        searchFilters.classList.add('collapsed');
+                        searchFilters.classList.remove('force-show');
+                    }, 1000); // Hide after 1 second of downward scrolling
+                }
+                
+                lastScrollY = currentScrollY;
+                ticking = false;
+            }
+            
+            function requestTick() {
+                if (!ticking) {
+                    requestAnimationFrame(updateFiltersVisibility);
+                    ticking = true;
+                }
+            }
+            
+            // Scroll event listener
+            window.addEventListener('scroll', requestTick);
+            
+            // Touch/click on collapsed filter to expand
+            searchFilters.addEventListener('click', () => {
+                if (searchFilters.classList.contains('collapsed')) {
+                    searchFilters.classList.remove('collapsed');
+                    searchFilters.classList.add('force-show');
+                }
+            });
+            
+            // Keep filters visible when interacting with them
+            searchFilters.addEventListener('mouseenter', () => {
+                clearTimeout(hideTimeout);
+                searchFilters.classList.remove('collapsed');
+                searchFilters.classList.add('force-show');
+            });
+            
+            // Auto-hide after interaction ends (mobile)
+            searchFilters.addEventListener('mouseleave', () => {
+                if (window.innerWidth <= 768) {
+                    hideTimeout = setTimeout(() => {
+                        if (window.scrollY > 100) {
+                            searchFilters.classList.add('collapsed');
+                            searchFilters.classList.remove('force-show');
+                        }
+                    }, 2000);
+                }
+            });
+            
+            // Focus events to keep filters visible
+            const focusableElements = searchFilters.querySelectorAll('input, select, button');
+            focusableElements.forEach(element => {
+                element.addEventListener('focus', () => {
+                    clearTimeout(hideTimeout);
+                    searchFilters.classList.remove('collapsed');
+                    searchFilters.classList.add('force-show');
+                });
+            });
+        }
+
+        function setupInteractiveFeatures() {
+            const tiltCards = document.querySelectorAll('.tilt-3d');
+            
+            // 3D Tilt effect for all tilt-3d elements
+            tiltCards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    
+                    const deltaX = e.clientX - centerX;
+                    const deltaY = e.clientY - centerY;
+                    
+                    const rotateX = (deltaY / rect.height) * -10;
+                    const rotateY = (deltaX / rect.width) * 10;
+                    
+                    card.style.setProperty('--tilt-x', `${rotateX}deg`);
+                    card.style.setProperty('--tilt-y', `${rotateY}deg`);
+                });
+                
+                card.addEventListener('mouseleave', () => {
+                    card.style.setProperty('--tilt-x', '0deg');
+                    card.style.setProperty('--tilt-y', '0deg');
+                    
+                    if (card.classList.contains('disease-card')) {
+                        hideQuickview();
+                    }
+                });
+            });
+
+            // Enhanced checkbox styling
+            const checkboxItems = document.querySelectorAll('.checkbox-item');
+            checkboxItems.forEach(item => {
+                const checkbox = item.querySelector('input[type="checkbox"]');
+                
+                checkbox.addEventListener('change', () => {
+                    if (checkbox.checked) {
+                        item.style.background = 'linear-gradient(135deg, rgba(120,180,140,0.2), rgba(120,180,140,0.1))';
+                        item.style.borderColor = 'hsl(var(--accent1))';
+                        item.style.color = 'hsl(var(--accent1))';
+                    } else {
+                        item.style.background = 'rgba(255,255,255,0.6)';
+                        item.style.borderColor = 'rgba(16,24,32,0.08)';
+                        item.style.color = '';
+                    }
+                });
+            });
+
+            // Enhanced search input interaction
+            searchInput.addEventListener('input', (e) => {
+                if (e.target.value.length > 0) {
+                    e.target.style.boxShadow = '0 0 0 3px rgba(120,180,140,0.2), 0 8px 25px rgba(16,24,32,0.1)';
+                } else {
+                    e.target.style.boxShadow = '';
+                }
+            });
+        }
+
+        // --- Event Handlers ---
+        function handleSearch(e) {
+            searchTerm = e.target.value.toLowerCase();
+            currentPage = 1;
+            filterAndSort();
+            renderDiseases();
+        }
+
+        function handleSortChange(e) {
+            sortBy = e.target.value;
+            filterAndSort();
+            renderDiseases();
+        }
+
+        function handleSortOrderChange(e) {
+            sortOrder = e.target.value;
+            filterAndSort();
+            renderDiseases();
+        }
+
+        function handleDoshaFilter() {
+            selectedDoshas = Array.from(doshaCheckboxes).filter(cb => cb.checked).map(cb => cb.value);
+            currentPage = 1;
+            filterAndSort();
+            renderDiseases();
+        }
+
+        function handleItemsPerPageChange(e) {
+            itemsPerPage = parseInt(e.target.value);
+            currentPage = 1;
+            renderDiseases();
+        }
+
+        function changePage(page) {
+            const totalPages = Math.ceil(filteredDiseases.length / itemsPerPage) || 1;
+            if (page >= 1 && page <= totalPages) {
+                currentPage = page;
+                renderDiseases();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        // --- Data Processing ---
+        function filterAndSort() {
+            let filtered = [...diseases];
+
+            if (searchTerm.trim()) {
+                filtered = filtered.filter(disease =>
+                    disease.disease.toLowerCase().includes(searchTerm) ||
+                    disease.dosha.some(d => d.toLowerCase().includes(searchTerm)) ||
+                    disease.causes.some(c => c.toLowerCase().includes(searchTerm)) ||
+                    disease.symptoms.some(s => s.toLowerCase().includes(searchTerm)) ||
+                    disease.treatment.some(t => t.toLowerCase().includes(searchTerm)) ||
+                    disease.diet.some(d => d.toLowerCase().includes(searchTerm)) ||
+                    disease.herbs.some(h => h.toLowerCase().includes(searchTerm)) ||
+                    disease.precautions.some(p => p.toLowerCase().includes(searchTerm))
+                );
+            }
+
+            if (selectedDoshas.length > 0) {
+                filtered = filtered.filter(disease =>
+                    disease.dosha.some(dosha => selectedDoshas.includes(dosha))
+                );
+            }
+
+            filtered.sort((a, b) => {
+                let aValue, bValue;
+                switch (sortBy) {
+                    case 'disease':
+                        aValue = a.disease.toLowerCase();
+                        bValue = b.disease.toLowerCase();
+                        break;
+                    case 'dosha':
+                        aValue = a.dosha.join(', ').toLowerCase();
+                        bValue = b.dosha.join(', ').toLowerCase();
+                        break;
+                    case 'symptoms':
+                        aValue = a.symptoms.length;
+                        bValue = b.symptoms.length;
+                        break;
+                    case 'treatment':
+                        aValue = a.treatment.length;
+                        bValue = b.treatment.length;
+                        break;
+                    default:
+                        aValue = a.disease.toLowerCase();
+                        bValue = b.disease.toLowerCase();
+                }
+
+                if (aValue < bValue) return sortOrder === 'asc' ? -1 : 1;
+                if (aValue > bValue) return sortOrder === 'asc' ? 1 : -1;
+                return 0;
+            });
+
+            filteredDiseases = filtered;
+            updateStats();
+        }
+
+        function updateStats() {
+            totalDiseasesEl.textContent = diseases.length;
+            filteredResultsEl.textContent = filteredDiseases.length;
+            avgSymptomsEl.textContent = Math.round(
+                diseases.reduce((acc, d) => acc + d.symptoms.length, 0) / diseases.length
+            );
+            doshaTypesEl.textContent = Array.from(new Set(diseases.flatMap(d => d.dosha))).length;
+        }
+
+        // --- Rendering ---
+        function renderDiseases() {
+            const totalPages = Math.ceil(filteredDiseases.length / itemsPerPage) || 1;
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = startIndex + itemsPerPage;
+            const paginatedDiseases = filteredDiseases.slice(startIndex, endIndex);
+
+            if (paginatedDiseases.length === 0) {
+                diseasesGrid.style.display = 'none';
+                noResults.classList.remove('hidden');
+            } else {
+                diseasesGrid.style.display = 'grid';
+                noResults.classList.add('hidden');
+
+                diseasesGrid.innerHTML = paginatedDiseases.map((disease, idx) => {
+                    function safeJSON(arr) {
+                        return JSON.stringify(arr).replace(/"/g, '&quot;');
+                    }
+
+                    return `
+                        <div class="disease-card tilt-3d" role="listitem" tabindex="0" 
+                             data-index="${startIndex + idx}" style="animation-delay: ${idx * 0.1}s">
+                            <div class="disease-header">
+                                <div>
+                                    <h3 class="disease-title">${highlightText(disease.disease, searchTerm)}</h3>
+                                    <div class="dosha-badges">
+                                        ${disease.dosha.map(d => `<span class="dosha-badge">${d}</span>`).join('')}
+                                    </div>
+                                </div>
+                                <div class="symptom-count">${disease.symptoms.length} symptoms</div>
+                            </div>
+
+                            <div class="disease-details">
+                                <div class="disease-section">
+                                    <div class="section-title">Symptoms</div>
+                                    <ul class="section-list">
+                                        ${disease.symptoms.slice(0, 3).map(s => `<li>${highlightText(s, searchTerm)}</li>`).join('')}
+                                        ${disease.symptoms.length > 3 ? `<li><em>+${disease.symptoms.length - 3} more symptoms</em></li>` : ''}
+                                    </ul>
+                                    ${disease.symptoms.length > 3 ? `<button class="toggle-btn" onclick="toggleSection(this, ${safeJSON(disease.symptoms)}, 'symptoms')">Show all symptoms</button>` : ''}
+                                </div>
+
+                                <div class="disease-section">
+                                    <div class="section-title">Causes</div>
+                                    <ul class="section-list">
+                                        ${disease.causes.slice(0, 3).map(c => `<li>${highlightText(c, searchTerm)}</li>`).join('')}
+                                        ${disease.causes.length > 3 ? `<li><em>+${disease.causes.length - 3} more causes</em></li>` : ''}
+                                    </ul>
+                                    ${disease.causes.length > 3 ? `<button class="toggle-btn" onclick="toggleSection(this, ${safeJSON(disease.causes)}, 'causes')">Show all causes</button>` : ''}
+                                </div>
+
+                                <div class="disease-section">
+                                    <div class="section-title">Treatment</div>
+                                    <ul class="section-list">
+                                        ${disease.treatment.slice(0, 2).map(t => `<li>${highlightText(t, searchTerm)}</li>`).join('')}
+                                        ${disease.treatment.length > 2 ? `<li><em>+${disease.treatment.length - 2} more treatments</em></li>` : ''}
+                                    </ul>
+                                    ${disease.treatment.length > 2 ? `<button class="toggle-btn" onclick="toggleSection(this, ${safeJSON(disease.treatment)}, 'treatment')">Show all treatments</button>` : ''}
+                                </div>
+
+                                <div class="disease-section">
+                                    <div class="section-title">Diet Recommendations</div>
+                                    <ul class="section-list">
+                                        ${disease.diet.slice(0, 3).map(d => `<li>${highlightText(d, searchTerm)}</li>`).join('')}
+                                        ${disease.diet.length > 3 ? `<li><em>+${disease.diet.length - 3} more recommendations</em></li>` : ''}
+                                    </ul>
+                                    ${disease.diet.length > 3 ? `<button class="toggle-btn" onclick="toggleSection(this, ${safeJSON(disease.diet)}, 'diet')">Show all diet recommendations</button>` : ''}
+                                </div>
+
+                                <div class="disease-section">
+                                    <div class="section-title">Herbs</div>
+                                    <ul class="section-list">
+                                        ${disease.herbs.slice(0, 3).map(h => `<li>${highlightText(h, searchTerm)}</li>`).join('')}
+                                        ${disease.herbs.length > 3 ? `<li><em>+${disease.herbs.length - 3} more herbs</em></li>` : ''}
+                                    </ul>
+                                    ${disease.herbs.length > 3 ? `<button class="toggle-btn" onclick="toggleSection(this, ${safeJSON(disease.herbs)}, 'herbs')">Show all herbs</button>` : ''}
+                                </div>
+
+                                <div class="disease-section">
+                                    <div class="section-title">Precautions</div>
+                                    <ul class="section-list">
+                                        ${disease.precautions.slice(0, 3).map(p => `<li>${highlightText(p, searchTerm)}</li>`).join('')}
+                                        ${disease.precautions.length > 3 ? `<li><em>+${disease.precautions.length - 3} more precautions</em></li>` : ''}
+                                    </ul>
+                                    ${disease.precautions.length > 3 ? `<button class="toggle-btn" onclick="toggleSection(this, ${safeJSON(disease.precautions)}, 'precautions')">Show all precautions</button>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                // Attach interactive behaviors after DOM insertion
+                attachCardInteractions();
+            }
+
+            renderPagination(totalPages);
+        }
+
+        // Attach card interactions (3D tilt, click-to-expand, quickview)
+        function attachCardInteractions() {
+            const cards = document.querySelectorAll('.disease-card');
+
+            cards.forEach(card => {
+                // Remove existing listeners to avoid duplicates
+                card.onmousemove = null;
+                card.onmouseleave = null;
+                card.onclick = null;
+                card.onmouseenter = null;
+
+                // 3D tilt effect on mouse move
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const cx = rect.left + rect.width / 2;
+                    const cy = rect.top + rect.height / 2;
+                    const dx = e.clientX - cx;
+                    const dy = e.clientY - cy;
+                    const px = (dy / rect.height) * 12;
+                    const py = -(dx / rect.width) * 12;
+                    card.style.transform = `perspective(900px) rotateX(${px}deg) rotateY(${py}deg) translateZ(8px)`;
+                    card.style.boxShadow = '0 18px 48px rgba(16,24,32,0.14)';
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = '';
+                    card.style.boxShadow = '';
+                    hideQuickview();
+                });
+
+                // Click toggles details
+                card.addEventListener('click', (e) => {
+                    if (e.target.closest('button')) return;
+                    toggleCardDetails(card);
+                });
+
+                // Quick view tooltip on hover (desktop)
+                card.addEventListener('mouseenter', (e) => {
+                    if (window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+                        const idx = parseInt(card.getAttribute('data-index') || '0', 10);
+                        const disease = filteredDiseases[idx % filteredDiseases.length] || filteredDiseases[0];
+                        if (disease) showQuickviewForCard(card, disease);
+                    }
+                });
+
+                // Keyboard accessibility
+                card.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleCardDetails(card);
+                    }
+                });
+            });
+        }
+
+        function toggleCardDetails(card) {
+            const details = card.querySelector('.disease-details');
+            if (!details) return;
+            
+            const isExpanded = details.classList.contains('expanded');
+            if (isExpanded) {
+                details.classList.remove('expanded');
+                card.setAttribute('aria-expanded', 'false');
+            } else {
+                details.classList.add('expanded');
+                card.setAttribute('aria-expanded', 'true');
+            }
+        }
+
+        // Toggle section (preserve original function for inline onclick)
+        function toggleSection(btn, fullList, type) {
+            const sectionList = btn.previousElementSibling;
+            const isExpanded = btn.textContent.includes('Show less');
+
+            if (isExpanded) {
+                const limitedItems = type === 'treatment' ? 2 : 3;
+                sectionList.innerHTML = fullList.slice(0, limitedItems).map(item =>
+                    `<li>${highlightText(item, searchTerm)}</li>`
+                ).join('') +
+                (fullList.length > limitedItems ?
+                    `<li><em>+${fullList.length - limitedItems} more ${type}</em></li>`
+                    : ''
+                );
+                btn.textContent = `Show all ${type}`;
+            } else {
+                sectionList.innerHTML = fullList.map(item =>
+                    `<li>${highlightText(item, searchTerm)}</li>`
+                ).join('');
+                btn.textContent = `Show less ${type}`;
+            }
+        }
+
+        // Highlight search terms
+        function highlightText(text, term) {
+            if (!term || !term.trim) return text;
+            if (!term.trim()) return text;
+            const regex = new RegExp(`(${escapeRegExp(term)})`, 'gi');
+            return text.replace(regex, `<mark>$1</mark>`);
+        }
+
+        function escapeRegExp(string) {
+            return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        // Pagination rendering
+        function renderPagination(totalPages) {
+            const startItem = (currentPage - 1) * itemsPerPage + 1;
+            const endItem = Math.min(currentPage * itemsPerPage, filteredDiseases.length);
+
+            paginationInfo.textContent = filteredDiseases.length === 0 
+                ? 'Showing 0 results' 
+                : `Showing ${startItem}-${endItem} of ${filteredDiseases.length} results`;
+
+            prevBtn.disabled = currentPage === 1;
+            nextBtn.disabled = currentPage === totalPages || totalPages === 0;
+
+            let pages = [];
+            const maxVisiblePages = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+            let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+            if (endPage - startPage + 1 < maxVisiblePages) {
+                startPage = Math.max(1, endPage - maxVisiblePages + 1);
+            }
+
+            for (let i = startPage; i <= endPage; i++) pages.push(i);
+
+            pageNumbers.innerHTML = pages.map(page =>
+                `<button class="page-btn ${page === currentPage ? 'active' : ''}" 
+                         onclick="changePage(${page})">${page}</button>`
+            ).join('');
+        }
+
+        // Quickview functionality
+        let quickviewTimeout = null;
+        function showQuickviewForCard(card, disease) {
+            if (!quickviewEl) return;
+            clearTimeout(quickviewTimeout);
+            
+            const symptoms = disease.symptoms.slice(0, 2).map(s => escapeHtml(s)).join('<br>');
+            quickviewEl.querySelector('.quickview-title').textContent = disease.disease;
+            quickviewEl.querySelector('.quickview-content').innerHTML = symptoms;
+            
+            quickviewEl.classList.add('visible');
+            quickviewEl.setAttribute('aria-hidden', 'false');
+        }
+
+        function hideQuickview() {
+            if (!quickviewEl) return;
+            quickviewEl.classList.remove('visible');
+            quickviewEl.setAttribute('aria-hidden', 'true');
+        }
+
+        function escapeHtml(str) {
+            return (str + '').replace(/[&<>"']/g, function(m) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[m];
+            });
+        }
+
+        // Update quickview position on mouse move
+        document.addEventListener('mousemove', (e) => {
+            if (quickviewEl.classList.contains('visible')) {
+                const margin = 15;
+                let x = e.clientX + margin;
+                let y = e.clientY + margin;
+                
+                const rect = quickviewEl.getBoundingClientRect();
+                if (x + rect.width > window.innerWidth) {
+                    x = e.clientX - rect.width - margin;
+                }
+                if (y + rect.height > window.innerHeight) {
+                    y = e.clientY - rect.height - margin;
+                }
+                
+                quickviewEl.style.left = `${x}px`;
+                quickviewEl.style.top = `${y}px`;
+            }
+        });
+
+        // Import/Export functionality
+        function handleImport(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
+
+                    if (!Array.isArray(importedData)) {
+                        throw new Error('Data must be an array');
+                    }
+
+                    const validDiseases = importedData.filter(disease =>
+                        disease.disease &&
+                        Array.isArray(disease.dosha) &&
+                        Array.isArray(disease.symptoms) &&
+                        Array.isArray(disease.treatment)
+                    );
+
+                    if (validDiseases.length === 0) {
+                        throw new Error('No valid disease records found');
+                    }
+
+                    diseases = [...diseases, ...validDiseases];
+                    filterAndSort();
+                    renderDiseases();
+
+                    alert(`Successfully imported ${validDiseases.length} disease records!`);
+
+                } catch (error) {
+                    alert(`Import failed: ${error.message}`);
+                }
+            };
+
+            reader.readAsText(file);
+            e.target.value = ''; // Reset file input
+        }
+
+        function handleExport() {
+            const dataToExport = filteredDiseases;
+            const dataStr = JSON.stringify(dataToExport, null, 2);
+            const dataBlob = new Blob([dataStr], { type: 'application/json' });
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `ayurvedic-diseases-${new Date().toISOString().split('T')[0]}.json`;
+            link.click();
+            URL.revokeObjectURL(url);
+            alert(`Exported ${dataToExport.length} disease records!`);
+        }
+
+        // Responsive adjustments
+        window.addEventListener('resize', () => {
+            document.querySelectorAll('.disease-details').forEach(d => {
+                if (d.classList.contains('expanded')) {
+                    d.style.maxHeight = d.scrollHeight + 24 + 'px';
+                }
+            });
+        });
+function renderDoshaChart() {
+    const ctx = document.createElement('canvas');
+    document.getElementById('doshaChart').innerHTML = '';
+    document.getElementById('doshaChart').appendChild(ctx);
+
+    const doshaCounts = {
+        Vata: diseases.filter(d => d.dosha.includes("Vata")).length,
+        Pitta: diseases.filter(d => d.dosha.includes("Pitta")).length,
+        Kapha: diseases.filter(d => d.dosha.includes("Kapha")).length,
+        Ama: diseases.filter(d => d.dosha.includes("Ama")).length
+    };
+
+    new Chart(ctx, {
+        type: 'pie',
+        data: {
+            labels: Object.keys(doshaCounts),
+            datasets: [{
+                data: Object.values(doshaCounts),
+                backgroundColor: ['#4B9CD3', '#F4A261', '#2A9D8F', '#E76F51']
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+}
+
+// Initialize the application
+init();
+renderDoshaChart();
+    </script>
+<!-- Download button -->
+<button onclick="downloadFullHTML()">Download Full HTML</button>
+<script>
+function downloadFullHTML() {
+    let htmlContent = document.documentElement.outerHTML;
+
+    // Sirf sampleDiseases line replace karo
+    let newDataLine = `const sampleDiseases = ${JSON.stringify(diseases, null, 2)};`;
+    htmlContent = htmlContent.replace(/const sampleDiseases\s*=\s*\[[\s\S]*?\];/, newDataLine);
+
+    // Create download
+    const blob = new Blob([htmlContent], {type: "text/html"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "full_data.html";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Intro animation for header & search
+    anime({
+        targets: 'header, .search-section',
+        opacity: [0, 1],
+        translateY: [-30, 0],
+        easing: 'easeOutExpo',
+        duration: 1000,
+        delay: anime.stagger(150)
+    });
+
+    // Animate cards after render
+    function animateCards() {
+        anime({
+            targets: '.disease-card',
+            opacity: [0, 1],
+            translateY: [40, 0],
+            easing: 'easeOutExpo',
+            duration: 800,
+            delay: anime.stagger(120)
+        });
+    }
+
+    // Hook into existing renderDiseases function
+    const originalRenderDiseases = window.renderDiseases;
+    if (typeof originalRenderDiseases === 'function') {
+        window.renderDiseases = function() {
+            originalRenderDiseases.apply(this, arguments);
+            setTimeout(animateCards, 100); // Animate after DOM update
+        };
+    } else {
+        // Fallback: animate on load
+        animateCards();
+    }
+
+    // Hover scaling effect for cards
+    document.addEventListener('mouseover', function(e) {
+        if (e.target.closest('.disease-card')) {
+            anime.remove(e.target.closest('.disease-card'));
+            anime({
+                targets: e.target.closest('.disease-card'),
+                scale: 1.03,
+                duration: 300,
+                easing: 'easeOutQuad'
+            });
+        }
+    });
+    document.addEventListener('mouseout', function(e) {
+        if (e.target.closest('.disease-card')) {
+            anime.remove(e.target.closest('.disease-card'));
+            anime({
+                targets: e.target.closest('.disease-card'),
+                scale: 1,
+                duration: 300,
+                easing: 'easeOutQuad'
+            });
+        }
+    });
+});
+</script>
+
+<script>
+(function(){
+    // Wait for the main app to be ready
+    function onReady(cb) {
+        if (window.renderDiseases && window.diseases) return cb();
+        var t = setInterval(function(){
+            if (window.renderDiseases && window.diseases) {
+                clearInterval(t);
+                cb();
+            }
+        }, 50);
+        setTimeout(function(){ clearInterval(t); cb(); }, 3000);
+    }
+
+    onReady(function(){
+        try {
+            // compute top symptoms
+            const symptomCounts = {};
+            window.diseases.forEach(d => {
+                d.symptoms.forEach(s => {
+                    const key = s.toLowerCase();
+                    symptomCounts[key] = (symptomCounts[key]||0) + 1;
+                });
+            });
+            const top = Object.entries(symptomCounts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+            const topSymptomsDiv = document.getElementById('top-symptoms');
+            if (topSymptomsDiv) {
+                topSymptomsDiv.innerHTML = '<ol>'+ top.map(t=>`<li>${t[0]} <span style="color:hsl(var(--muted));">(${t[1]})</span></li>`).join('') + '</ol>';
+            }
+
+            // dosha counts
+            const doshaCounts = {Vata:0,Pitta:0,Kapha:0};
+            window.diseases.forEach(d => {
+                d.dosha.forEach(dd => {
+                    if(doshaCounts[dd]!==undefined) doshaCounts[dd]++;
+                });
+            });
+            document.getElementById('pill-total').textContent = window.diseases.length;
+            document.getElementById('pill-vata').textContent = doshaCounts.Vata||0;
+            document.getElementById('pill-pitta').textContent = doshaCounts.Pitta||0;
+            document.getElementById('pill-kapha').textContent = doshaCounts.Kapha||0;
+
+            // draw a simple donut chart in SVG
+            function drawDonut(svgId, counts) {
+                const svg = document.getElementById(svgId);
+                if(!svg) return;
+                const total = counts.Vata + counts.Pitta + counts.Kapha;
+                const centerX = 130, centerY = 90, r = 60;
+                const colors = {Vata:'#8FCF8F', Pitta:'#F5C76A', Kapha:'#D9A67A'};
+                let startAngle = -Math.PI/2;
+                svg.innerHTML = '';
+                Object.keys(counts).forEach(key => {
+                    const value = counts[key];
+                    if(value<=0) return;
+                    const sliceAngle = (value/total) * Math.PI*2;
+                    const endAngle = startAngle + sliceAngle;
+                    const x1 = centerX + r * Math.cos(startAngle);
+                    const y1 = centerY + r * Math.sin(startAngle);
+                    const x2 = centerX + r * Math.cos(endAngle);
+                    const y2 = centerY + r * Math.sin(endAngle);
+                    const large = sliceAngle > Math.PI ? 1 : 0;
+                    const path = document.createElementNS('http://www.w3.org/2000/svg','path');
+                    const d = `M ${centerX} ${centerY} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} Z`;
+                    path.setAttribute('d', d);
+                    path.setAttribute('fill', colors[key] || '#ccc');
+                    path.setAttribute('opacity', '0.95');
+                    svg.appendChild(path);
+                    startAngle = endAngle;
+                });
+                // center circle to make donut
+                const hole = document.createElementNS('http://www.w3.org/2000/svg','circle');
+                hole.setAttribute('cx', centerX);
+                hole.setAttribute('cy', centerY);
+                hole.setAttribute('r', r*0.55);
+                hole.setAttribute('fill', 'white');
+                svg.appendChild(hole);
+
+                // legend
+                const legend = document.getElementById('dosha-legend');
+                if(legend) {
+                    legend.innerHTML = '';
+                    Object.keys(counts).forEach(k=>{
+                        const el = document.createElement('div');
+                        el.style.display = 'flex';
+                        el.style.alignItems = 'center';
+                        el.style.gap = '0.4rem';
+                        el.innerHTML = `<span style="width:12px;height:12px;border-radius:3px;background:${colors[k]};display:inline-block"></span><span style="font-weight:700">${k}</span><span style="color:var(--muted); margin-left:6px;">${counts[k]}</span>`;
+                        legend.appendChild(el);
+                    });
+                }
+            }
+            drawDonut('dosha-chart', doshaCounts);
+
+            // Add copy to clipboard buttons to each card after render
+            const enhanceCards = () => {
+                const cards = document.querySelectorAll('.disease-card');
+                cards.forEach(card => {
+                    if (card.querySelector('.card-actions')) return; // already enhanced
+                    const detailEl = card.querySelector('.disease-details');
+                    const actions = document.createElement('div');
+                    actions.className = 'card-actions';
+                    actions.innerHTML = `<button class="copy-btn" title="Copy disease summary">Copy</button><button class="copy-btn" title="View JSON">JSON</button>`;
+                    // append to details or header
+                    if (detailEl) detailEl.appendChild(actions);
+                    else card.appendChild(actions);
+
+                    // copy behavior
+                    const copyBtn = actions.querySelector('.copy-btn');
+                    const jsonBtn = actions.querySelectorAll('.copy-btn')[1];
+                    copyBtn.addEventListener('click', () => {
+                        const idx = card.getAttribute('data-index');
+                        const disease = window.filteredDiseases ? window.filteredDiseases[idx] : null;
+                        const text = disease ? `${disease.disease}\nSymptoms: ${disease.symptoms.join(', ')}\nTreatment: ${disease.treatment.join(', ')}` : card.innerText;
+                        navigator.clipboard.writeText(text).then(()=>{
+                            copyBtn.textContent = 'Copied';
+                            setTimeout(()=> copyBtn.textContent = 'Copy', 1200);
+                        }).catch(()=>{
+                            alert('Copy failed');
+                        });
+                    });
+                    jsonBtn.addEventListener('click', () => {
+                        const idx = card.getAttribute('data-index');
+                        const disease = window.filteredDiseases ? window.filteredDiseases[idx] : null;
+                        const jsonStr = disease ? JSON.stringify(disease, null, 2) : '{}';
+                        // open small modal with JSON - simple prompt
+                        const win = window.open('','Disease JSON','width=600,height=400,scrollbars=yes');
+                        win.document.write('<pre style="white-space:pre-wrap;">'+jsonStr.replace(/</g,'&lt;')+'</pre>');
+                    });
+                });
+            };
+
+            // Hook into renderDiseases without replacing original - wrap it
+            const origRender = window.renderDiseases;
+            if (typeof origRender === 'function') {
+                window.renderDiseases = function() {
+                    origRender.apply(this, arguments);
+                    // update pills and insights after render
+                    document.getElementById('pill-total').textContent = window.diseases.length;
+                    // update filtered counts quickly
+                    const counts = {Vata:0,Pitta:0,Kapha:0};
+                    (window.filteredDiseases || window.diseases).forEach(d=> d.dosha.forEach(dd=> { if(counts[dd]!==undefined) counts[dd]++; }));
+                    document.getElementById('pill-vata').textContent = counts.Vata;
+                    document.getElementById('pill-pitta').textContent = counts.Pitta;
+                    document.getElementById('pill-kapha').textContent = counts.Kapha;
+                    // attach copy buttons
+                    enhanceCards();
+                    // animate cards using anime.js if available
+                    if (window.anime) {
+                        anime.remove('.disease-card');
+                        anime({
+                            targets: '.disease-card',
+                            opacity: [0,1],
+                            translateY: [30,0],
+                            scale: [0.98,1],
+                            delay: anime.stagger(80),
+                            duration: 700,
+                            easing: 'easeOutCubic'
+                        });
+                    }
+                };
+            } else {
+                // if render not found, try to enhance existing DOM
+                enhanceCards();
+            }
+
+            // Dosha filter quick buttons
+            document.getElementById('btn-all').addEventListener('click', ()=>{
+                document.querySelectorAll('#dosha-filters input[type="checkbox"]').forEach(cb=> cb.checked = false);
+                document.getElementById('search-input').value = '';
+                // trigger handlers if exist
+                if(typeof window.handleDoshaFilter === 'function') window.handleDoshaFilter();
+                if(typeof window.handleSearch === 'function') window.handleSearch({target:document.getElementById('search-input')});
+            });
+            document.getElementById('btn-vata').addEventListener('click', ()=>{
+                document.querySelectorAll('#dosha-filters input[type="checkbox"]').forEach(cb=> cb.checked = (cb.value==='Vata'));
+                if(typeof window.handleDoshaFilter === 'function') window.handleDoshaFilter();
+            });
+            document.getElementById('btn-pitta').addEventListener('click', ()=>{
+                document.querySelectorAll('#dosha-filters input[type="checkbox"]').forEach(cb=> cb.checked = (cb.value==='Pitta'));
+                if(typeof window.handleDoshaFilter === 'function') window.handleDoshaFilter();
+            });
+            document.getElementById('btn-kapha').addEventListener('click', ()=>{
+                document.querySelectorAll('#dosha-filters input[type="checkbox"]').forEach(cb=> cb.checked = (cb.value==='Kapha'));
+                if(typeof window.handleDoshaFilter === 'function') window.handleDoshaFilter();
+            });
+        } catch(err) {
+            console.error('Enhancement script error', err);
+        }
+    });
+})();
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    function drawDoshaChart(diseases) {
+        if (!Array.isArray(diseases) || diseases.length === 0) return;
+
+        const doshaCounts = { Vata: 0, Pitta: 0, Kapha: 0 };
+
+        diseases.forEach(d => {
+            if (Array.isArray(d.dosha)) {
+                d.dosha.forEach(dosha => {
+                    if (doshaCounts.hasOwnProperty(dosha)) {
+                        doshaCounts[dosha]++;
+                    }
+                });
+            } else if (typeof d.dosha === "string") {
+                const parts = d.dosha.split(/[,/]/).map(s => s.trim());
+                parts.forEach(p => {
+                    if (doshaCounts.hasOwnProperty(p)) {
+                        doshaCounts[p]++;
+                    }
+                });
+            }
+        });
+
+        const total = Object.values(doshaCounts).reduce((a, b) => a + b, 0);
+        if (total === 0) return;
+
+        const chartContainer = document.querySelector("#doshaChart");
+        if (!chartContainer) return;
+
+        chartContainer.innerHTML = "";
+
+        const canvas = document.createElement("canvas");
+        canvas.width = 220;
+        canvas.height = 220;
+        chartContainer.appendChild(canvas);
+        const ctx = canvas.getContext("2d");
+
+        const colors = { Vata: "#4f86f7", Pitta: "#f7b84f", Kapha: "#4ff786" };
+        const entries = Object.entries(doshaCounts);
+
+        let startAngle = -0.5 * Math.PI;
+        let currentStep = 0;
+        const steps = 60; // animation frames
+
+        function animatePie() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let angleStart = startAngle;
+            entries.forEach(([dosha, count]) => {
+                const sliceAngle = (count / total) * 2 * Math.PI;
+                const animatedAngle = sliceAngle * (currentStep / steps);
+                ctx.beginPath();
+                ctx.moveTo(110, 110);
+                ctx.arc(110, 110, 100, angleStart, angleStart + animatedAngle);
+                ctx.closePath();
+                ctx.fillStyle = colors[dosha];
+                ctx.fill();
+                angleStart += sliceAngle;
+            });
+
+            if (currentStep < steps) {
+                currentStep++;
+                requestAnimationFrame(animatePie);
+            }
+        }
+        animatePie();
+
+        // Legend
+        let legendHTML = "";
+        entries.forEach(([dosha, count]) => {
+            legendHTML += `<div style="display:flex;align-items:center;margin-top:4px;">
+                <div style="width:12px;height:12px;background:${colors[dosha]};margin-right:6px;"></div>
+                <span>${dosha} (${count})</span>
+            </div>`;
+        });
+        const legendDiv = document.createElement("div");
+        legendDiv.innerHTML = legendHTML;
+        chartContainer.appendChild(legendDiv);
+
+        // Click to filter
+        canvas.addEventListener("click", function(e) {
+            const rect = canvas.getBoundingClientRect();
+            const clickX = e.clientX - rect.left - 110;
+            const clickY = e.clientY - rect.top - 110;
+            const angle = Math.atan2(clickY, clickX);
+            let adjustedAngle = angle < -0.5 * Math.PI ? angle + 2 * Math.PI : angle;
+
+            let currentAngle = -0.5 * Math.PI;
+            for (let [dosha, count] of entries) {
+                let sliceAngle = (count / total) * 2 * Math.PI;
+                if (adjustedAngle >= currentAngle && adjustedAngle < currentAngle + sliceAngle) {
+                    document.querySelectorAll(".dosha-filter input").forEach(input => {
+                        input.checked = input.value === dosha;
+                    });
+                    if (typeof handleDoshaFilter === "function") handleDoshaFilter();
+                    break;
+                }
+                currentAngle += sliceAngle;
+            }
+        });
+    }
+
+    // Hook into renderDiseases
+    const originalRenderDiseases = window.renderDiseases;
+    if (typeof originalRenderDiseases === "function") {
+        window.renderDiseases = function() {
+            originalRenderDiseases.apply(this, arguments);
+            setTimeout(function() {
+                const dataSource = typeof filteredDiseases !== "undefined" && filteredDiseases.length 
+                                   ? filteredDiseases 
+                                   : (typeof allDiseases !== "undefined" ? allDiseases : []);
+                drawDoshaChart(dataSource);
+            }, 100);
+        };
+    }
+});
+</script>
+</body>
+</html>
